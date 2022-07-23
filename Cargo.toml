@@ -1,0 +1,30 @@
+[package]
+name = "rproxy"
+version = "0.1.0"
+edition = "2021"
+author = "shivam"
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[features]
+default = ["proto_full"]
+proto_full = ["authority"]
+authority = []
+
+[dependencies]
+hyper = { version = "0.14", features = ["full"] }
+tokio = {version="1.20.0",features = ["rt-multi-thread", "macros"]}
+protobuf = "3.1.0"
+bytes = "1.1.0"
+prost = "0.10.0"
+pbjson = "0.3"
+pbjson-types = "0.3"
+serde = "1.0"
+tonic = { version = "0.7", features = ["compression"] }
+dyn-clone = "1.0"
+
+
+[[bin]]
+name = "server"
+path = "src/server.rs"
+
+

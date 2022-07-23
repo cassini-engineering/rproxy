@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+import "proto/types.proto";
+
+package verify.client.verifypb;
+
+option go_package = "github.com/cassini-engineering/authenticator/verify/client/verifypb";
+
+service VerifyService {
+  rpc VerifyPhoneNumber(VerifyContactRequest) returns (typespb.Empty) {}
+  rpc RequestNewOTP(typespb.Empty) returns (typespb.Empty) {}
+  rpc ResendEmailCode(typespb.Empty) returns (typespb.Empty) {}
+  rpc VerifyEmailAddress(VerifyContactRequest) returns (typespb.Empty) {}
+}
+
+enum ContactType {
+    PHONE_NUMBER = 0;
+    EMAIL = 1;
+}
+
+message VerifyContactRequest {
+    string phone_number = 1; 
+    string otp = 2;
+    ContactType type = 3;
+}
+
+
+

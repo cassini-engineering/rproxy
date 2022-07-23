@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+import "proto/types.proto";
+
+package users.client.userspb;
+
+option go_package = "github.com/cassini-engineering/authenticator/users/client/userspb";
+
+service UsersService {
+  rpc Lookup(IdRequest) returns (User) {}
+  rpc UpdateUser(UpdateUserRequest) returns (typespb.Empty) {}
+  rpc DeleteUser(IdRequest) returns (typespb.Empty) {}
+}
+
+message User {
+    string phone_number = 1;
+    string email_address = 2;
+    bool verified = 4;
+    int32 created_at = 5;
+    int32 updated_at = 6;
+}
+
+message IdRequest {
+    string phone_number = 1;
+}
+
+message UpdateUserRequest {
+    string phone_number = 1;
+    User user = 2;
+}

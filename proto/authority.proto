@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+import "proto/types.proto";
+import "proto/users.proto";
+
+package authority.client.authoritypb;
+
+option go_package = "github.com/cassini-engineering/authenticator/authority/client/authoritypb";
+
+service AuthorityService {
+  rpc Hello(typespb.Empty) returns (HelloResponse) {}
+  rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse) {}
+  rpc Authenticate(AuthenticateRequest) returns (AuthenticateResponse) {}
+  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {} 
+}
+
+message HelloResponse {
+  string greeting = 1;
+}
+
+message RegisterUserRequest {
+  string phone_number = 1;
+  string device_identifier = 2;
+}
+
+message RegisterUserResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+}
+
+
+message AuthenticateRequest {
+  string access_token = 1;
+}
+
+message AuthenticateResponse {
+  users.client.userspb.User user = 1;
+}
+
+message RefreshTokenRequest {
+  string refresh_token = 1;
+}
+
+message RefreshTokenResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+}
+
+
+
