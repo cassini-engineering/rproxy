@@ -39,14 +39,15 @@ async fn r_proxy_service(
     req: Request<Body>,
     h: Arc<HashMap<String, Box<dyn Handles + Send + Sync>>>,
 ) -> Result<Response<Body>, hyper::Error> {
-    match req.uri().path() {
-        "/" => {
+    let split: Vec<&str> = req.uri().path().split("/").collect();
+    match split[1] {
+        "authenticator" => {
             let hh = h.get("authenticator").unwrap();
-            hh.handle(req)
+            hh.handle(req).await
         }
 
         _ => {
-            let mut not_found = Response::default();
+            let mut not_found = Response::new(Body::from("not found"));
             *not_found.status_mut() = StatusCode::NOT_FOUND;
             Ok(not_found)
         }

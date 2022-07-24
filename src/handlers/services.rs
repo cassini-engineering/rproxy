@@ -1,3 +1,4 @@
+use async_trait::async_trait;
 use dyn_clone::{clone_trait_object, DynClone};
 use std::collections::HashMap;
 
@@ -5,8 +6,9 @@ use hyper::{Body, Request, Response};
 
 use super::authenticator::build_authentication_handler;
 
+#[async_trait]
 pub trait Handles: DynClone {
-    fn handle(&self, req: Request<Body>) -> Result<Response<Body>, hyper::Error>;
+    async fn handle(&self, req: Request<Body>) -> Result<Response<Body>, hyper::Error>;
 }
 
 clone_trait_object!(Handles);
