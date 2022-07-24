@@ -14,9 +14,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
 
     let h = handlers::services::build_handler_map().await;
 
-    let service = make_service_fn(|_| async {
-        let inner = h.clone();
-        Ok::<_, hyper::Error>(service_fn(move |req| r_proxy_service(req, inner.clone())))
+    let shared = Arc::new(h);
+
+    let service = make_service_fn(move |_conn| {
+        let sp = shared.clone();
+        async {
+            Ok::<_, hyper::Error>(service_fn(move |req| {
+                let sp = sp.clone();
+                r_proxy_service(req, sp)
+            }))
+        }
     });
 
     let server = Server::bind(&addr).serve(service);
@@ -30,7 +37,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
 
 async fn r_proxy_service(
     req: Request<Body>,
-    h: HashMap<String, Box<dyn Handles + Send>>,
+    h: Arc<HashMap<String, Box<dyn Handles + Send + Sync>>>,
 ) -> Result<Response<Body>, hyper::Error> {
     match req.uri().path() {
         "/" => {
